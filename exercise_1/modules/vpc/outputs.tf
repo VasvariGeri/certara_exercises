@@ -22,3 +22,8 @@ output "private_route_table_ids" {
   description = "IDs of private route tables."
   value       = aws_route_table.private[*].id
 }
+
+output "s3_vpc_endpoint_id" {
+  description = "ID of the S3 gateway VPC endpoint."
+  value       = aws_vpc_endpoint.s3.id
+}
