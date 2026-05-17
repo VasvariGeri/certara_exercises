@@ -4,7 +4,7 @@ This exercise packages a simple Go REST service and deploys it to a local miniku
 
 ## Planned Scope
 
-- Provide a Go service with a `/hello-world` endpoint.
+- Package the provided REST service with a `/hello-world` endpoint.
 - Build a container image locally.
 - Deploy the service to minikube with Kubernetes manifests.
 - Expose the service through a localhost URI.
@@ -20,14 +20,26 @@ This exercise packages a simple Go REST service and deploys it to a local miniku
 }
 ```
 
-## Planned Layout
+## Layout
 
 ```text
 .
-├── app/
+├── Dockerfile
 ├── k8s/
+├── rest_1.0/
 └── scripts/
 ```
+
+## Build Image
+
+Build the container image locally:
+
+```sh
+docker build -t certara-rest:1.0 exercise_3
+```
+
+The Dockerfile uses the provided Linux binary matching the target image architecture.
+It uses Alpine Linux as a small, common base image so the container remains easy to inspect and debug during local development.
 
 ## Planned Workflow
 
@@ -40,4 +52,4 @@ The final workflow should let a developer run a small number of local commands t
 
 ## Notes
 
-The original exercise mentions a `rest_1.0.zip` application archive. If that archive is available, the application source can be placed under `app/`. If not, this repository will provide an equivalent minimal Go implementation matching the required endpoint contract.
+The provided `rest_1.0` archive contains prebuilt binaries for multiple operating systems and CPU architectures. The container image uses the Linux binaries only.
