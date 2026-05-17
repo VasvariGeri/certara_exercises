@@ -67,6 +67,22 @@ You can override defaults when needed:
 MINIKUBE_PROFILE=minikube IMAGE_NAME=certara-rest:1.0 exercise_3/scripts/deploy-minikube.sh
 ```
 
+## Run Locally
+
+Deploy the service and open a localhost port-forward with one command:
+
+```sh
+exercise_3/scripts/run-local.sh
+```
+
+Then call the endpoint from another terminal:
+
+```sh
+curl http://127.0.0.1:18080/hello-world
+```
+
+The command keeps the port-forward running until interrupted with `Ctrl+C`.
+
 ## Access From Localhost
 
 Forward the Kubernetes service to localhost:
@@ -92,6 +108,21 @@ The provided binary returns:
 ```json
 {"message":"Hello World!"}
 ```
+
+## Make Targets
+
+The repository root Makefile wraps the common Exercise 3 commands:
+
+```sh
+make validate-exercise-3
+make build-exercise-3
+make deploy-exercise-3
+make port-forward-exercise-3
+make run-exercise-3
+make smoke-test-exercise-3
+```
+
+The `run-exercise-3` and `port-forward-exercise-3` targets keep running until interrupted.
 
 ## Workflow
 
