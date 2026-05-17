@@ -67,9 +67,35 @@ You can override defaults when needed:
 MINIKUBE_PROFILE=minikube IMAGE_NAME=certara-rest:1.0 exercise_3/scripts/deploy-minikube.sh
 ```
 
-## Planned Workflow
+## Access From Localhost
 
-The final workflow should let a developer run a small number of local commands to:
+Forward the Kubernetes service to localhost:
+
+```sh
+exercise_3/scripts/port-forward.sh
+```
+
+Then call the endpoint from another terminal:
+
+```sh
+curl http://127.0.0.1:18080/hello-world
+```
+
+Run an automated smoke test:
+
+```sh
+exercise_3/scripts/smoke-test.sh
+```
+
+The provided binary returns:
+
+```json
+{"message":"Hello World!"}
+```
+
+## Workflow
+
+The local workflow is:
 
 1. Start or reuse a minikube cluster.
 2. Build the application image locally.
