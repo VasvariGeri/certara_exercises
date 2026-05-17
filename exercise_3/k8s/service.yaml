@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rest-service
+  namespace: certara-exercise-3
+  labels:
+    app.kubernetes.io/name: rest-service
+    app.kubernetes.io/part-of: certara-exercise-3
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: rest-service
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

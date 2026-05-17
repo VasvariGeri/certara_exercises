@@ -41,6 +41,16 @@ docker build -t certara-rest:1.0 exercise_3
 The Dockerfile uses the provided Linux binary matching the target image architecture.
 It uses Alpine Linux as a small, common base image so the container remains easy to inspect and debug during local development.
 
+## Kubernetes Manifests
+
+The Kubernetes manifests live under `k8s/` and create:
+
+- a dedicated namespace,
+- a single-replica deployment,
+- a ClusterIP service.
+
+The deployment uses the local image tag `certara-rest:1.0` with `imagePullPolicy: IfNotPresent`, so minikube can use an image built locally instead of pulling from a remote registry.
+
 ## Planned Workflow
 
 The final workflow should let a developer run a small number of local commands to:
