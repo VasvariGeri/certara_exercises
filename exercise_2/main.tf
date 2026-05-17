@@ -26,6 +26,71 @@ resource "aws_s3_bucket" "backups" {
   })
 }
 
+data "aws_iam_policy_document" "backup_bucket" {
+  statement {
+    sid    = "DenyInsecureTransport"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:*"]
+
+    resources = [
+      aws_s3_bucket.backups.arn,
+      "${aws_s3_bucket.backups.arn}/*",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+
+  statement {
+    sid    = "AllowBackupUploaderBucketAccess"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = [var.backup_uploader_role_arn]
+    }
+
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:ListBucketMultipartUploads",
+    ]
+
+    resources = [aws_s3_bucket.backups.arn]
+  }
+
+  statement {
+    sid    = "AllowBackupUploaderObjectUploads"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = [var.backup_uploader_role_arn]
+    }
+
+    actions = [
+      "s3:AbortMultipartUpload",
+      "s3:ListMultipartUploadParts",
+      "s3:PutObject",
+    ]
+
+    resources = ["${aws_s3_bucket.backups.arn}/*"]
+  }
+}
+
+resource "aws_s3_bucket_policy" "backups" {
+  bucket = aws_s3_bucket.backups.id
+  policy = data.aws_iam_policy_document.backup_bucket.json
+}
+
 resource "aws_s3_bucket_public_access_block" "backups" {
   bucket = aws_s3_bucket.backups.id
 
@@ -51,10 +116,47 @@ resource "aws_s3_bucket_versioning" "backups" {
   }
 }
 
+data "aws_iam_policy_document" "backup_key" {
+  statement {
+    sid    = "EnableBucketOwnerKMSAdministration"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.bucket_owner_account_id}:root"]
+    }
+
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowBackupUploaderKMSUsage"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = [var.backup_uploader_role_arn]
+    }
+
+    actions = [
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:ReEncryptFrom",
+      "kms:ReEncryptTo",
+    ]
+
+    resources = ["*"]
+  }
+}
+
 resource "aws_kms_key" "backups" {
   description             = "KMS key for S3 backup bucket encryption"
   deletion_window_in_days = 30
   enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.backup_key.json
 
   tags = merge(local.common_tags, {
     Name = "${var.bucket_name}-backup-key"

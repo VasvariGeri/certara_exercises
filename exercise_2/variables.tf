@@ -9,6 +9,11 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "bucket_owner_account_id" {
+  description = "AWS account ID that owns the backup bucket and KMS key."
+  type        = string
+}
+
 variable "backup_uploader_role_arn" {
   description = "IAM role ARN allowed to upload backup objects."
   type        = string
