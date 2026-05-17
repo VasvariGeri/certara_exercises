@@ -83,6 +83,20 @@ curl http://127.0.0.1:18080/hello-world
 
 The command keeps the port-forward running until interrupted with `Ctrl+C`.
 
+## Clean Up
+
+Delete the Kubernetes namespace created for this exercise:
+
+```sh
+exercise_3/scripts/cleanup.sh
+```
+
+Stop the minikube profile as well:
+
+```sh
+STOP_MINIKUBE=true exercise_3/scripts/cleanup.sh
+```
+
 ## Access From Localhost
 
 Forward the Kubernetes service to localhost:
@@ -120,6 +134,7 @@ make deploy-exercise-3
 make port-forward-exercise-3
 make run-exercise-3
 make smoke-test-exercise-3
+make cleanup-exercise-3
 ```
 
 The `run-exercise-3` and `port-forward-exercise-3` targets keep running until interrupted.

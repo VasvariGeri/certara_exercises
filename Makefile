@@ -1,4 +1,4 @@
-.PHONY: fmt-exercise-1 validate-exercise-1 fmt-exercise-2 validate-exercise-2 plan-exercise-2 validate-exercise-3 build-exercise-3 deploy-exercise-3 port-forward-exercise-3 run-exercise-3 smoke-test-exercise-3
+.PHONY: fmt-exercise-1 validate-exercise-1 fmt-exercise-2 validate-exercise-2 plan-exercise-2 validate-exercise-3 build-exercise-3 deploy-exercise-3 port-forward-exercise-3 run-exercise-3 smoke-test-exercise-3 cleanup-exercise-3
 
 fmt-exercise-1:
 	terraform fmt -recursive exercise_1
@@ -22,6 +22,7 @@ plan-exercise-2:
 
 validate-exercise-3:
 	sh -n exercise_3/scripts/check-tools.sh
+	sh -n exercise_3/scripts/cleanup.sh
 	sh -n exercise_3/scripts/deploy-minikube.sh
 	sh -n exercise_3/scripts/port-forward.sh
 	sh -n exercise_3/scripts/run-local.sh
@@ -41,3 +42,6 @@ run-exercise-3:
 
 smoke-test-exercise-3:
 	exercise_3/scripts/smoke-test.sh
+
+cleanup-exercise-3:
+	exercise_3/scripts/cleanup.sh
