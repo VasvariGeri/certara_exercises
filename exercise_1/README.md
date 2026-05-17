@@ -21,7 +21,25 @@ This exercise contains a reusable Terraform module that creates a VPC suitable f
     └── basic/
 ```
 
-## Validate
+## Validate Without an AWS Account
+
+The configuration can be checked locally without an AWS account:
+
+```sh
+make validate-exercise-1
+```
+
+This runs Terraform formatting checks, initializes the example without a backend, and validates the configuration. An internet connection is still required the first time Terraform downloads the AWS provider.
+
+You can also run the commands manually:
+
+```sh
+terraform fmt -recursive -check exercise_1
+terraform -chdir=exercise_1/examples/basic init -backend=false -input=false
+terraform -chdir=exercise_1/examples/basic validate
+```
+
+## Plan
 
 From the example directory:
 
@@ -31,7 +49,7 @@ terraform init
 terraform plan
 ```
 
-The example uses mock AWS credentials and disables provider-side credential validation so the configuration can be reviewed without deploying resources.
+The example uses mock AWS credentials and disables some provider-side credential validation, but a real `terraform plan` may still require AWS provider API access depending on provider behavior. Do not run `terraform apply` for this exercise unless you intentionally want to create billable AWS resources.
 
 ## Cost Note
 
