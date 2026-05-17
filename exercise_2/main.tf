@@ -78,3 +78,28 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "backups" {
     bucket_key_enabled = true
   }
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "backups" {
+  bucket = aws_s3_bucket.backups.id
+
+  rule {
+    id     = "expire-backups-after-retention-period"
+    status = "Enabled"
+
+    filter {}
+
+    expiration {
+      days = var.retention_days
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.retention_days
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+
+  depends_on = [aws_s3_bucket_versioning.backups]
+}
