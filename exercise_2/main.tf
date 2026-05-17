@@ -68,6 +68,44 @@ data "aws_iam_policy_document" "backup_bucket" {
   }
 
   statement {
+    sid    = "DenyUploadsWithoutKmsEncryption"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions   = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.backups.arn}/*"]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "s3:x-amz-server-side-encryption"
+      values   = ["aws:kms"]
+    }
+  }
+
+  statement {
+    sid    = "DenyUploadsWithWrongKmsKey"
+    effect = "Deny"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions   = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.backups.arn}/*"]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "s3:x-amz-server-side-encryption-aws-kms-key-id"
+      values   = [aws_kms_key.backups.arn]
+    }
+  }
+
+  statement {
     sid    = "AllowBackupUploaderObjectUploads"
     effect = "Allow"
 
@@ -105,14 +143,6 @@ resource "aws_s3_bucket_ownership_controls" "backups" {
 
   rule {
     object_ownership = "BucketOwnerEnforced"
-  }
-}
-
-resource "aws_s3_bucket_versioning" "backups" {
-  bucket = aws_s3_bucket.backups.id
-
-  versioning_configuration {
-    status = "Enabled"
   }
 }
 
@@ -194,14 +224,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "backups" {
       days = var.retention_days
     }
 
-    noncurrent_version_expiration {
-      noncurrent_days = var.retention_days
-    }
-
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
     }
   }
-
-  depends_on = [aws_s3_bucket_versioning.backups]
 }
