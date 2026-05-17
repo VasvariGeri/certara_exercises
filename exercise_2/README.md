@@ -18,12 +18,12 @@ arn:aws:iam::123456789012:role/backup_uploader
 
 - Public access is blocked at bucket level.
 - Object ownership is enforced by the bucket owner.
-- Bucket versioning is enabled.
 - Default server-side encryption uses a customer managed KMS key with rotation enabled.
 - S3 bucket keys are enabled to reduce KMS request cost.
-- Lifecycle rules expire current and noncurrent object versions after 180 days.
+- Lifecycle rules expire backup objects after 180 days.
 - Incomplete multipart uploads are cleaned up after 7 days.
 - Bucket policy denies insecure HTTP access.
+- Bucket policy denies uploads that do not use the configured KMS key.
 - The uploader role is allowed to upload backup objects.
 - The uploader role is allowed to use the KMS key for encryption.
 
