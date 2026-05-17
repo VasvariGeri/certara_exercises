@@ -2,7 +2,7 @@
 
 This exercise contains a reusable Terraform module that creates a VPC suitable for a basic public/private application layout.
 
-## Planned Scope
+## What It Builds
 
 - One VPC with DNS support enabled.
 - Two public subnets across two availability zones.
@@ -21,9 +21,9 @@ This exercise contains a reusable Terraform module that creates a VPC suitable f
     └── basic/
 ```
 
-## Planned Validation
+## Validate
 
-After the example is added, validation will run from the example directory:
+From the example directory:
 
 ```sh
 cd exercise_1/examples/basic
@@ -31,6 +31,8 @@ terraform init
 terraform plan
 ```
 
+The example uses mock AWS credentials and disables provider-side credential validation so the configuration can be reviewed without deploying resources.
+
 ## Cost Note
 
-The completed module will create a NAT gateway, which is not free tier eligible. Do not apply this configuration unless you intentionally want to create billable AWS resources.
+The module creates a NAT gateway, which is not free tier eligible. Do not apply this configuration unless you intentionally want to create billable AWS resources.
