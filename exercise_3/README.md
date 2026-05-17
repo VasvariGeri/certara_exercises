@@ -51,6 +51,22 @@ The Kubernetes manifests live under `k8s/` and create:
 
 The deployment uses the local image tag `certara-rest:1.0` with `imagePullPolicy: IfNotPresent`, so minikube can use an image built locally instead of pulling from a remote registry.
 
+## Deploy To Minikube
+
+Deploy the service to a local minikube cluster:
+
+```sh
+exercise_3/scripts/deploy-minikube.sh
+```
+
+The script checks required tooling, starts or reuses the `certara-exercise-3` minikube profile, builds the image locally, loads it into minikube, applies the Kubernetes manifests, and waits for the deployment rollout.
+
+You can override defaults when needed:
+
+```sh
+MINIKUBE_PROFILE=minikube IMAGE_NAME=certara-rest:1.0 exercise_3/scripts/deploy-minikube.sh
+```
+
 ## Planned Workflow
 
 The final workflow should let a developer run a small number of local commands to:
