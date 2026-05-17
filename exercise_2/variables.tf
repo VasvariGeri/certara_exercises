@@ -7,11 +7,13 @@ variable "aws_region" {
 variable "bucket_name" {
   description = "Globally unique name for the backup bucket."
   type        = string
+  default     = "certara-exercise-2-backups-example"
 }
 
 variable "bucket_owner_account_id" {
   description = "AWS account ID that owns the backup bucket and KMS key."
   type        = string
+  default     = "111122223333"
 }
 
 variable "backup_uploader_role_arn" {
